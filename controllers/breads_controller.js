@@ -10,8 +10,8 @@ breads.get('/', (req, res) => {
       title: 'Index Page'
     }
   )
-// res.send(Bread)
 })
+
 
 module.exports = breads
 
