@@ -1,5 +1,6 @@
 // DEPENDENCIES
 const express = require('express')
+const methodOverride = require('method-override')
 const mongoose = require('mongoose')
 
 
@@ -8,19 +9,16 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 const PORT = process.env.PORT
 const app = express()
-
-// MIDDLEWARE
-app.set('views', __dirname + '/views')
-app.set('view engine', 'jsx')
-app.engine('jsx', require('express-react-views').createEngine())
-
-// DEPENDENCIES
-const methodOverride = require('method-override')
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true}, 
+  () => { console.log('connected to mongo: ', process.env.MONGO_URI) }
+)
 
 // MIDDLEWARE
 app.use(methodOverride('_method'))
 app.use(express.urlencoded({extended: true}))
-
+app.set('views', __dirname + '/views')
+app.set('view engine', 'jsx')
+app.engine('jsx', require('express-react-views').createEngine())
 
 // ROUTES
 app.get('/', (req, res) => {
@@ -41,7 +39,3 @@ app.listen(PORT, () => {
   console.log('listening on port', PORT);
 })
 
-// MONGOOSE
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true}, 
-  () => { console.log('connected to mongo: ', process.env.MONGO_URI) }
-)
