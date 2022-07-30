@@ -2,6 +2,9 @@ const express = require('express')
 const breads = express.Router()
 const Bread = require('../models/bread.js')
 
+// somewhere at the top with the other dependencies
+const Baker = require('../models/baker.js')
+
 // INDEX
 breads.get('/', (req, res) => {
   Bread.find()
@@ -16,7 +19,12 @@ breads.get('/', (req, res) => {
 
 // NEW
 breads.get('/new', (req, res) => {
-  res.render('new')
+  Baker.find()
+  .then(foundBakers => {
+    res.render('new' {
+      bakers: foundBakers
+    })
+  })
 })
 
 // SHOW
@@ -34,6 +42,8 @@ breads.get('/:arrayIndex', (req, res) => {
 breads.get('/:id', (req, res) => {
   Bread.findById(req.params.id)
     .then (foundBread => {
+      const bakedBy = foundBread.getBakedBy()
+      console.log(bakedBy)
       res.render('show', {
         bread: foundBread
       })
