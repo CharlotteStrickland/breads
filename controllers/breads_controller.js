@@ -5,10 +5,12 @@ const Baker = require('../models/baker.js')
 
 // INDEX
 breads.get('/', async (req, res) => {
-  const foundBaker = await Baker.find()
-  const foundBread = await Bread.find().limit(2)
+  const foundBaker = await Baker.find().lean()
+  const foundBread = await Bread.find().limit(2).lean()
   res.render('index', {
-  title: 'Index Page'
+    breads: foundBreads,
+    bakers: foundBakers,
+    title: 'Index Page'
   })
 })
 
@@ -16,11 +18,11 @@ breads.get('/', async (req, res) => {
 // NEW
 breads.get('/new', (req, res) => {
   Baker.find()
-  .then(foundBakers => {
-    res.render('new', {
-      bakers: foundBakers
+    .then(foundBakers => {
+      res.render('new', {
+        bakers: foundBakers
+      })
     })
-  })
 })
 
 // SHOW
@@ -37,8 +39,8 @@ breads.get('/:arrayIndex', (req, res) => {
 
 breads.get('/:id', (req, res) => {
   Bread.findById(req.params.id)
-  .populate('baker')
-    .then (foundBread => {
+    .populate('baker')
+    .then(foundBread => {
       const bakedBy = foundBread.getBakedBy()
       console.log(bakedBy)
       res.render('show', {
@@ -73,9 +75,9 @@ breads.get('/data/seed', (req, res) => {
       image: 'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1050&q=80',
     }
   ])
-  .then(createdBreads => {
-    res.redirect('/breads')
-  })
+    .then(createdBreads => {
+      res.redirect('/breads')
+    })
 })
 
 
@@ -106,13 +108,13 @@ breads.get('/:indexArray/edit', (req, res) => {
 breads.get('/:id/edit', (req, res) => {
   Baker.find()
     .then(foundBakers => {
-        Bread.findById(req.params.id)
-          .then(foundBread => {
-            res.render('edit', {
-                bread: foundBread, 
-                bakers: foundBakers 
-            })
+      Bread.findById(req.params.id)
+        .then(foundBread => {
+          res.render('edit', {
+            bread: foundBread,
+            bakers: foundBakers
           })
+        })
     })
 })
 
@@ -130,16 +132,16 @@ breads.put('/:arrayIndex', (req, res) => {
 })
 
 breads.put('/:id', (req, res) => {
-  if(req.body.hasGluten === 'on') {
+  if (req.body.hasGluten === 'on') {
     req.body.hasGluten = true
   } else {
     req.body.hasGluten = false
   }
-  Bread.findByIdAndUpdate(req.params.id, req.body, { new: true})
-  .then(updatedBread => {
-    console.log(updatedBread)
-    res.redirect(`/breads/${req.params.id}`)
-  })
+  Bread.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then(updatedBread => {
+      console.log(updatedBread)
+      res.redirect(`/breads/${req.params.id}`)
+    })
 })
 
 
