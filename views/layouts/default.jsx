@@ -24,4 +24,3 @@ function Default(html) {
 }
 
 module.exports = Default
-
